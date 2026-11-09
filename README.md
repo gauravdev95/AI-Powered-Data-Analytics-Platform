@@ -2,9 +2,9 @@
 ---
 # 🚀 **AI-Powered Analytics Platform**
 
-### *Interactive Dashboard + Natural Language “Chat With Data” (Vanna AI + Groq)*
+### *Interactive Dashboard + Natural Language “Chat With Data” (Groq LLM → SQL)*
 
-**Docker-Based, Production-Grade Analytics System**
+**Docker-Based Analytics System**
 
 ---
 
@@ -28,7 +28,7 @@ This is a **full-stack, enterprise-style analytics platform** that enables users
 * 💬 Ask **natural language questions** and get instant insights
 * 🧠 Convert **NL → SQL → Charts** using AI
 * 🧱 Run everything locally using **Docker**
-* ⚡ Leverage **Groq LLM + Vanna AI** for fast analytics
+* ⚡ Leverage **Groq LLM** for fast NL → SQL analytics
 
 Designed to mimic **real-world SaaS analytics products**.
 
@@ -83,7 +83,7 @@ Next.js Frontend
         ↓
 Node.js Backend (APIs)
         ↓
-Vanna AI Service (FastAPI)
+Chat With Data Service (FastAPI, `services/`)
         ↓
 Groq LLM → SQL Generation
         ↓
@@ -101,23 +101,19 @@ PostgreSQL Database
 ```
 📂 apps
  ├── 🌐 web        → Next.js frontend
- ├── 🔌 api        → Backend APIs
- └── 🤖 vanna      → AI / NLP service
+ └── 🔌 api        → Backend APIs (Express + Prisma schema in `apps/api/prisma/`)
+
+📂 services
+ └── 🤖 app.py     → Chat With Data service (FastAPI + Groq LLM → SQL)
 
 📂 data
- └── 📄 analytics_data.json
+ └── 📄 Analytics_Test_Data.json
 
-📂 docker
- ├── 🐳 docker-compose.yml
- └── 🧱 Dockerfiles
-
-📂 prisma | drizzle
- └── 🧬 Database schema
-
-📂 assets
- ├── 🖼️ analytics-dashboard.png
+📂 screenshots
+ ├── 🖼️ image1.png
  └── 📊 chat-top-5-vendors.png
 
+📄 docker-compose.yml   → root compose file (frontend, backend, services, PostgreSQL)
 ```
 
 ---
@@ -160,14 +156,15 @@ PostgreSQL Database
 
 ```
 DATABASE_URL=postgresql://user:pass@db:5432/analytics
-VANNA_API_BASE_URL=http://vanna:8000
+CHAT_DATA_API_BASE_URL=http://localhost:8000
 ```
 
-### Vanna AI
+### Chat With Data service (`services/`)
 
 ```
-DATABASE_URL=postgresql+psycopg://user:pass@db:5432/analytics
+DB_URL=postgresql+psycopg://user:pass@db:5432/analytics
 GROQ_API_KEY=your_key_here
+ALLOWED_ORIGINS=http://localhost:3000
 PORT=8000
 ```
 
@@ -183,7 +180,7 @@ Services:
 
 * Frontend → [http://localhost:3000](http://localhost:3000)
 * Backend → [http://localhost:5000](http://localhost:5000)
-* Vanna AI → [http://localhost:8000](http://localhost:8000)
+* Chat With Data service → [http://localhost:8000](http://localhost:8000)
 * PostgreSQL → 5432
 
 ---
@@ -192,8 +189,8 @@ Services:
 
 1. User asks question
 2. Frontend → Backend
-3. Backend → Vanna AI
-4. Vanna → Groq → SQL
+3. Backend → Chat With Data service (`services/app.py`)
+4. Service → Groq → SQL (validated: single read-only SELECT only)
 5. SQL runs on DB
 6. Results returned
 7. UI renders table + chart
@@ -212,10 +209,9 @@ Services:
 
 ## 🙌 **Acknowledgements**
 
-* Vanna AI
 * Groq LLM
 * Next.js
-* Prisma / Drizzle
+* Prisma
 * Tailwind CSS
 
 ---
